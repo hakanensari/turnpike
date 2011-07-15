@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version     = Turnpike::VERSION
   s.authors     = ["Paper Cavalier"]
   s.email       = ["code@papercavalier.com"]
-  s.homepage    = ""
+  s.homepage    = "http://code.papercavalier.com/turnpike"
   s.summary     = %q{Turnpike is a Redis-backed processing queue.}
   s.description = %q{Turnpike is a Redis-backed processing queue.}
 
