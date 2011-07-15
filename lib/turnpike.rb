@@ -4,7 +4,6 @@ require 'redis'
 class Turnpike
   REDIS_VERSION = Redis.current.info['redis_version']
   TIMEOUT       = ENV['TURNPIKE_TIMEOUT'] || 2
-  VERSION       = '0.0.1'
 
   # The name of the queue.
   attr :name

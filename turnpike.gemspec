@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-require "./lib/turnpike"
+require "./lib/turnpike/version"
 
 Gem::Specification.new do |s|
   s.name        = "turnpike"
