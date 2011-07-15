@@ -85,7 +85,7 @@ class Turnpike
     if REDIS_VERSION < '2.3'
       items.each { |item| redis.rpush(name, item) }
     else
-      redis.rpush(name, items)
+      redis.rpush(name, *items)
     end
   end
   alias << push
@@ -108,7 +108,7 @@ class Turnpike
     if REDIS_VERSION < '2.3'
       items.each { |item| redis.lpush(name, item) }
     else
-      redis.lpush(name, items)
+      redis.lpush(name, *items)
     end
   end
 
