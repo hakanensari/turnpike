@@ -2,7 +2,6 @@ require 'redis'
 
 # A Redis-backed queue.
 class Turnpike
-  REDIS_VERSION = Redis.current.info['redis_version']
   # Timeout, in seconds, for blocking `pop` or `shift`.
   #
   # Defaults to two seconds. Set to zero if you want to block indefinitely.
@@ -87,12 +86,7 @@ class Turnpike
 
   # Pushes items to the end of the queue.
   def push(*items)
-    # Up until Redis 2.3, `rpush` accepts a single value.
-    if REDIS_VERSION < '2.3'
-      items.each { |item| redis.rpush(name, item) }
-    else
-      redis.rpush(name, *items)
-    end
+    items.each { |item| redis.rpush(name, item) }
   end
   alias << push
 
@@ -110,12 +104,7 @@ class Turnpike
 
   # Pushes items to the front of the queue.
   def unshift(*items)
-    # Up until Redis 2.3, `rpush` accepts a single value.
-    if REDIS_VERSION < '2.3'
-      items.each { |item| redis.lpush(name, item) }
-    else
-      redis.lpush(name, *items)
-    end
+    items.each { |item| redis.lpush(name, item) }
   end
 
   private
