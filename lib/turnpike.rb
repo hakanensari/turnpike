@@ -3,7 +3,10 @@ require 'redis'
 # A Redis-backed queue.
 class Turnpike
   REDIS_VERSION = Redis.current.info['redis_version']
-  TIMEOUT       = ENV['TURNPIKE_TIMEOUT'] || 2
+  # Timeout, in seconds, for blocking `pop` or `shift`.
+  #
+  # Defaults to two seconds. Set to zero if you want to block indefinitely.
+  TIMEOUT = ENV['TURNPIKE_TIMEOUT'] || 2
 
   # The name of the queue.
   attr :name
@@ -31,6 +34,9 @@ class Turnpike
   end
 
   # Iterates the given block for each slice of `n` queued items.
+  #
+  # Takes an optional boolean argument to specify if the command should block
+  # the connection when the queue is empty. This argument defaults to false.
   def each_slice(n, blocking = false, &block)
     slice = []
 
