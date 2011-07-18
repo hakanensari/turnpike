@@ -3,8 +3,18 @@ require 'redis'
 # A Redis-backed queue.
 class Turnpike
   class << self
+    def options
+      @options ||= {}
+    end
+
     # Timeout, in seconds, for blocking `pop` or `shift`.
     attr_accessor :timeout
+
+    @timeout = 0
+
+    def connect(options)
+      @options = options
+    end
 
     def configure(&block)
       yield self
@@ -82,7 +92,7 @@ class Turnpike
   # the connection when the queue is empty. This argument defaults to false.
   def pop(blocking = false)
     if blocking
-      redis.brpop(name, timeout)[1] rescue nil
+      redis.brpop(name, Turnpike.timeout)[1] rescue nil
     else
       redis.rpop(name)
     end
@@ -100,7 +110,7 @@ class Turnpike
   # the connection when the queue is empty. This argument defaults to false.
   def shift(blocking = false)
     if blocking
-      redis.blpop(name, timeout)[1] rescue nil
+      redis.blpop(name, Turnpike.timeout)[1] rescue nil
     else
       redis.lpop(name)
     end
@@ -114,11 +124,6 @@ class Turnpike
   private
 
   def redis
-    Redis.current
-  end
-
-  def timeout
-    # Timeout will default to 0, which blocks indefinitely.
-    self.class.timeout.to_i
+    Redis.current ||= Redis.connect(Turnpike.options)
   end
 end
