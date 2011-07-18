@@ -108,7 +108,7 @@ class TestTurnpike < Test::Unit::TestCase
     end
     assert_equal(0, queue.length)
     assert_equal('1', queue.pop(true))
-    assert_equal(1, Time.now.to_i - started_at)
+    assert(Time.now.to_i - started_at > 0)
   end
 
   def test_blocking_shift
@@ -120,7 +120,7 @@ class TestTurnpike < Test::Unit::TestCase
     end
     assert_equal(0, queue.length)
     assert_equal('1', queue.shift(true))
-    assert_equal(1, Time.now.to_i - started_at)
+    assert(Time.now.to_i - started_at > 0)
   end
 
   def test_timeout
