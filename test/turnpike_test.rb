@@ -2,6 +2,7 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'test/unit'
+require 'system_timer' unless defined?(RUBY_ENGINE)
 
 require File.expand_path('../lib/turnpike', File.dirname(__FILE__))
 
