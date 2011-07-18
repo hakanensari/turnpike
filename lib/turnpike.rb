@@ -2,10 +2,14 @@ require 'redis'
 
 # A Redis-backed queue.
 class Turnpike
-  # Timeout, in seconds, for blocking `pop` or `shift`.
-  #
-  # Defaults to two seconds. Set to zero if you want to block indefinitely.
-  TIMEOUT = ENV['TURNPIKE_TIMEOUT'] || 2
+  class << self
+    # Timeout, in seconds, for blocking `pop` or `shift`.
+    attr_accessor :timeout
+
+    def configure(&block)
+      yield self
+    end
+  end
 
   # The name of the queue.
   attr :name
@@ -78,7 +82,7 @@ class Turnpike
   # the connection when the queue is empty. This argument defaults to false.
   def pop(blocking = false)
     if blocking
-      redis.brpop(name, TIMEOUT)[1] rescue nil
+      redis.brpop(name, timeout)[1] rescue nil
     else
       redis.rpop(name)
     end
@@ -96,7 +100,7 @@ class Turnpike
   # the connection when the queue is empty. This argument defaults to false.
   def shift(blocking = false)
     if blocking
-      redis.blpop(name, TIMEOUT)[1] rescue nil
+      redis.blpop(name, timeout)[1] rescue nil
     else
       redis.lpop(name)
     end
@@ -111,5 +115,10 @@ class Turnpike
 
   def redis
     Redis.current
+  end
+
+  def timeout
+    # Timeout will default to 0, which blocks indefinitely.
+    self.class.timeout.to_i
   end
 end

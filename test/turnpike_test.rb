@@ -10,6 +10,13 @@ class TestTurnpike < Test::Unit::TestCase
     Redis.current.flushall
   end
 
+  def time_out_in(seconds, &block)
+    original_timeout = Turnpike.timeout
+    Turnpike.configure { |c| c.timeout = seconds }
+    block.call
+    Turnpike.configure { |c| c.timeout = original_timeout }
+  end
+
   def test_emptiness
     queue = Turnpike.new
     assert(queue.empty?)
@@ -117,15 +124,17 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_timeout
-    queue = Turnpike.new
-    thread = Thread.new do
-      sleep(3)
-      queue.push(1)
-    end
-    assert_equal(0, queue.length)
-    assert_equal(nil, queue.shift(true))
+    time_out_in 1 do
+      queue = Turnpike.new
+      thread = Thread.new do
+        sleep(2)
+        queue.push(1)
+      end
+      assert_equal(0, queue.length)
+      assert_equal(nil, queue.shift(true))
 
-    thread.join
-    assert_equal(1, queue.length)
+      thread.join
+      assert_equal(1, queue.length)
+    end
   end
 end
