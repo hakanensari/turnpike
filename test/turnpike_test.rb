@@ -18,8 +18,8 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_bracket_method
-   assert_equal("turnpike:foo", Turnpike["foo"].name)
-   assert(Turnpike["foo"] == Turnpike["foo"])
+    assert_equal("turnpike:foo", Turnpike["foo"].name)
+    assert(Turnpike["foo"] == Turnpike["foo"])
   end
 
   def test_emptiness
