@@ -17,6 +17,11 @@ class TestTurnpike < Test::Unit::TestCase
     Turnpike.configure { |c| c.timeout = original_timeout }
   end
 
+  def test_bracket_method
+   assert_equal("turnpike:foo", Turnpike["foo"].name)
+   assert(Turnpike["foo"] == Turnpike["foo"])
+  end
+
   def test_emptiness
     queue = Turnpike.new
     assert(queue.empty?)
