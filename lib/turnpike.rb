@@ -67,7 +67,7 @@ class Turnpike
     each(blocking) do |item|
       slice << item
       if slice.size == n
-        yield slice
+        block.call(slice)
         slice = []
       end
     end
