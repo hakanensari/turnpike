@@ -16,8 +16,19 @@ class Turnpike
       @options = options
     end
 
+    # Returns a queue. Syntactic sugar.
+    def [](queue)
+      queues[queue] ||= new(queue)
+    end
+
     def configure(&block)
       yield self
+    end
+
+    private
+
+    def queues
+      @queues ||= Hash.new
     end
   end
 
@@ -56,7 +67,7 @@ class Turnpike
     each(blocking) do |item|
       slice << item
       if slice.size == n
-        yield slice
+        block.call(slice)
         slice = []
       end
     end
