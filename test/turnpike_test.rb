@@ -12,18 +12,18 @@ class TestTurnpike < Test::Unit::TestCase
 
   def time_out_in(seconds, &block)
     original_timeout = Turnpike.timeout
-    Turnpike.configure { |c| c.timeout = seconds }
+    Turnpike.timeout = seconds
     block.call
-    Turnpike.configure { |c| c.timeout = original_timeout }
+    Turnpike.timeout = original_timeout
   end
 
   def test_bracket_method
-    assert_equal("turnpike:foo", Turnpike["foo"].name)
-    assert(Turnpike["foo"] == Turnpike["foo"])
+    assert_equal('turnpike:foo', Turnpike["foo"].name)
+    assert(Turnpike['foo'] == Turnpike["foo"])
   end
 
   def test_emptiness
-    queue = Turnpike.new
+    queue = Turnpike::Queue.new
     assert(queue.empty?)
 
     queue << 1
@@ -34,7 +34,7 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_pushing_items
-    queue = Turnpike.new
+    queue = Turnpike::Queue.new
     queue.push(1)
     assert_equal(1, queue.length)
 
@@ -44,7 +44,7 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_unshifting_items
-    queue = Turnpike.new
+    queue = Turnpike::Queue.new
     queue.unshift(1)
     assert_equal(1, queue.length)
 
@@ -54,7 +54,7 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_popping_items
-    queue = Turnpike.new
+    queue = Turnpike::Queue.new
     queue.push(1, 2)
     assert_equal('2', queue.pop)
     assert_equal('1', queue.pop)
@@ -62,7 +62,7 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_shifting_items
-    queue = Turnpike.new
+    queue = Turnpike::Queue.new
     queue.push(1, 2)
     assert_equal('1', queue.shift)
     assert_equal('2', queue.shift)
@@ -70,7 +70,7 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_enumeration
-    queue = Turnpike.new
+    queue = Turnpike::Queue.new
     queue.push(1, 2)
     items = []
     queue.each { |item| items << item }
@@ -88,14 +88,14 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_aliases
-    queue = Turnpike.new
+    queue = Turnpike::Queue.new
     queue << 1
     assert_equal(1, queue.size)
   end
 
   def test_multiple_queues
-    queue1 = Turnpike.new("foo")
-    queue2 = Turnpike.new("bar")
+    queue1 = Turnpike::Queue.new("foo")
+    queue2 = Turnpike::Queue.new("bar")
 
     queue1.push(1)
     queue2.push(2, 3)
@@ -105,7 +105,7 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_blocking_pop
-    queue = Turnpike.new
+    queue = Turnpike::Queue.new
     started_at = Time.now.to_i
     Thread.new do
       sleep(1)
@@ -117,7 +117,7 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_blocking_shift
-    queue = Turnpike.new
+    queue = Turnpike::Queue.new
     started_at = Time.now.to_i
     Thread.new do
       sleep(1)
@@ -130,7 +130,7 @@ class TestTurnpike < Test::Unit::TestCase
 
   def test_timeout
     time_out_in 1 do
-      queue = Turnpike.new
+      queue = Turnpike::Queue.new
       thread = Thread.new do
         sleep(2)
         queue.push(1)
