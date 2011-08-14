@@ -153,7 +153,9 @@ class TestTurnpike < Test::Unit::TestCase
 
     assert queue.observe(*items)
 
+    started_at = Time.now
     items << { :timeout => 1 }
     assert !queue.observe(*items)
+    assert Time.now - started_at < 1.25
   end
 end
