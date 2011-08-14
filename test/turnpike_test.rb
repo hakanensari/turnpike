@@ -10,11 +10,11 @@ class TestTurnpike < Test::Unit::TestCase
     Redis.current.flushall
   end
 
-  def time_out_in(seconds, &block)
-    original_timeout = Turnpike.timeout
-    Turnpike.timeout = seconds
+  def time_out_in(queue, seconds, &block)
+    original_timeout = queue.timeout
+    queue.timeout = seconds
     block.call
-    Turnpike.timeout = original_timeout
+    queue.timeout = original_timeout
   end
 
   def test_bracket_method
@@ -129,8 +129,8 @@ class TestTurnpike < Test::Unit::TestCase
   end
 
   def test_timeout
-    time_out_in 1 do
-      queue = Turnpike::Queue.new
+    queue = Turnpike::Queue.new
+    time_out_in queue, 1 do
       thread = Thread.new do
         sleep(2)
         queue.push(1)
@@ -141,5 +141,16 @@ class TestTurnpike < Test::Unit::TestCase
       thread.join
       assert_equal(1, queue.length)
     end
+  end
+
+  def test_subscription
+    items = ['foo', 'bar']
+    queue = Turnpike::Queue.new
+    Thread.new do
+      sleep(2)
+      queue.publish(*items)
+    end
+
+    assert queue.subscribe(*items)
   end
 end
