@@ -147,10 +147,11 @@ class TestTurnpike < Test::Unit::TestCase
     items = ['foo', 'bar']
     queue = Turnpike::Queue.new
     Thread.new do
-      sleep(2)
+      sleep 1
       queue.publish(*items)
     end
 
     assert queue.subscribe(*items)
+    assert !queue.subscribe(*items, :timeout => 1)
   end
 end

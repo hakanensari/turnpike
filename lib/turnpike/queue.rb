@@ -121,26 +121,17 @@ module Turnpike
     #
     # Returns true if all items are processed.
     def subscribe(*items)
-      options      = items.last.is_a?(Hash) ? items.pop : {}
-      timeout      = options[:timeout] || 10
-      subscription = Redis.connect(Turnpike.options)
+      options = items.last.is_a?(Hash) ? items.pop : {}
+      timeout = options[:timeout] || 10
 
-      # if defined?(EM) && EM.reactor_running?
-      #   timer = EM.add_timer(timeout) { subscription.unsubscribe }
-      # end
-
-      subscription.subscribe(name) do |on|
-        on.message do |channel, message|
-          message.split('|').each { |item| items.delete(item) }
-          subscription.unsubscribe if items.empty?
-        end
+      if reactor_running?
+        sub = Subscription.new(name)
+        timer = EM.add_timer(timeout) { sub.unsubscribe }
+        sub.subscribe(*items) && EM.cancel_timer(timer)
+      else
+        sub = Thread.new { Subscription.new(name).subscribe(*items) }
+        !!sub.join(timeout)
       end
-
-      # if defined?(EM) && EM.reactor_running?
-      #   EM.cancel_timer timer
-      # end
-
-      items.empty?
     end
 
     # Pushes items to the front of the queue.
@@ -149,6 +140,10 @@ module Turnpike
     end
 
     private
+
+    def reactor_running?
+      defined?(EM) && EM.reactor_running?
+    end
 
     def redis
       Redis.current ||= Redis.connect(Turnpike.options)

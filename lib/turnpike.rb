@@ -1,5 +1,6 @@
 require 'redis'
 require 'turnpike/queue'
+require 'turnpike/subscription'
 
 # = Turnpike
 #
