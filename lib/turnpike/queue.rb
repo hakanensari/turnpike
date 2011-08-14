@@ -73,17 +73,7 @@ module Turnpike
     #
     # Returns true if notified of a state change in all items.
     def observe(*items)
-      options = items.last.is_a?(Hash) ? items.pop : {}
-      timeout = options[:timeout] || 10
-
-      if reactor_running?
-        sub = Subscription.new(name)
-        timer = EM.add_timer(timeout) { sub.unsubscribe }
-        sub.subscribe(*items) && EM.cancel_timer(timer)
-      else
-        sub = Thread.new { Subscription.new(name).subscribe(*items) }
-        !!sub.join(timeout)
-      end
+      Observer.new(name, *items).observe
     end
 
     alias size length
@@ -139,10 +129,6 @@ module Turnpike
     end
 
     private
-
-    def reactor_running?
-      defined?(EM) && EM.reactor_running?
-    end
 
     def redis
       Redis.current ||= Redis.connect(Turnpike.options)
