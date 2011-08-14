@@ -1,6 +1,6 @@
 # Turnpike
 
-[![travis](https://secure.travis-ci.org/papercavalier/turnpike.png)](http://travis-ci.org/papercavalier/turnpike)
+[![travis](https://secure.travis-ci.org/hakanensari/turnpike.png)](http://travis-ci.org/hakanensari/turnpike)
 
 Turnpike is a Redis-backed message processing queue.
 
