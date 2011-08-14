@@ -1,5 +1,4 @@
 module Turnpike
-  # A Redis pubsub subscription.
   class Subscription
     def initialize(name)
       @name = name

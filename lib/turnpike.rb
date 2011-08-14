@@ -4,7 +4,7 @@ require 'turnpike/subscription'
 
 # = Turnpike
 #
-# A Redis-backed queue.
+# A Redis-backed messaging queue.
 module Turnpike
   class << self
     # Returns a cached or new queue.
