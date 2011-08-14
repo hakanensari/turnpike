@@ -131,14 +131,14 @@ class TestTurnpike < Test::Unit::TestCase
   def test_timeout
     queue = Turnpike::Queue.new
     time_out_in queue, 1 do
-      thread = Thread.new do
-        sleep(2)
+      thr = Thread.new do
+        sleep(3)
         queue.push(1)
       end
       assert_equal(0, queue.length)
       assert_equal(nil, queue.shift(true))
 
-      thread.join
+      thr.join
       assert_equal(1, queue.length)
     end
   end
