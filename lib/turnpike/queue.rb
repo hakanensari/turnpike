@@ -33,7 +33,7 @@ module Turnpike
       end
     end
 
-    # Iterates the given block for each slice of `n` queued items.
+    # Iterates the given block for each slice of _n_ queued items.
     #
     # Takes an optional boolean argument to specify if the command
     # should block the connection when the queue is empty. This
