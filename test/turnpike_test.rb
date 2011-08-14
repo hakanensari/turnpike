@@ -152,6 +152,8 @@ class TestTurnpike < Test::Unit::TestCase
     end
 
     assert queue.observe(*items)
-    assert !queue.observe(*items, :timeout => 1)
+
+    items << { :timeout => 1 }
+    assert !queue.observe(*items)
   end
 end
