@@ -62,6 +62,30 @@ module Turnpike
       redis.llen(name)
     end
 
+    # Notifies observers that the state of specified items has changed.
+    def notify(*items)
+      redis.publish(name, items.join('|'))
+    end
+
+    # Observes items.
+    #
+    # Takes an optional timeout argument, wich defaults to 10 seconds.
+    #
+    # Returns true if notified of a state change in all items.
+    def observe(*items)
+      options = items.last.is_a?(Hash) ? items.pop : {}
+      timeout = options[:timeout] || 10
+
+      if reactor_running?
+        sub = Subscription.new(name)
+        timer = EM.add_timer(timeout) { sub.unsubscribe }
+        sub.subscribe(*items) && EM.cancel_timer(timer)
+      else
+        sub = Thread.new { Subscription.new(name).subscribe(*items) }
+        !!sub.join(timeout)
+      end
+    end
+
     alias size length
 
     # Returns an array of items currently queued.
@@ -89,11 +113,6 @@ module Turnpike
       end
     end
 
-    # Publishes to queue items that have been processed.
-    def publish(*items)
-      redis.publish(name, items.join('|'))
-    end
-
     # Pushes items to the end of the queue.
     def push(*items)
       items.each { |item| redis.rpush(name, item) }
@@ -111,26 +130,6 @@ module Turnpike
         redis.blpop(name, timeout)[1] rescue nil
       else
         redis.lpop(name)
-      end
-    end
-
-    # Subscribes to one or more items to be notified of their
-    # processing.
-    #
-    # Takes an optional timeout argument, which defaults to 10 seconds.
-    #
-    # Returns true if all items are processed.
-    def subscribe(*items)
-      options = items.last.is_a?(Hash) ? items.pop : {}
-      timeout = options[:timeout] || 10
-
-      if reactor_running?
-        sub = Subscription.new(name)
-        timer = EM.add_timer(timeout) { sub.unsubscribe }
-        sub.subscribe(*items) && EM.cancel_timer(timer)
-      else
-        sub = Thread.new { Subscription.new(name).subscribe(*items) }
-        !!sub.join(timeout)
       end
     end
 

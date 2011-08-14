@@ -143,15 +143,15 @@ class TestTurnpike < Test::Unit::TestCase
     end
   end
 
-  def test_subscription
+  def test_observer
     items = ['foo', 'bar']
     queue = Turnpike::Queue.new
     Thread.new do
       sleep 1
-      queue.publish(*items)
+      queue.notify(*items)
     end
 
-    assert queue.subscribe(*items)
-    assert !queue.subscribe(*items, :timeout => 1)
+    assert queue.observe(*items)
+    assert !queue.observe(*items, :timeout => 1)
   end
 end
