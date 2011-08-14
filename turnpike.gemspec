@@ -7,8 +7,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Paper Cavalier"]
   s.email       = ["code@papercavalier.com"]
   s.homepage    = "http://code.papercavalier.com/turnpike"
-  s.summary     = %q{Turnpike is a Redis-backed message processing queue.}
-  s.description = %q{Turnpike is a Redis-backed message processing queue.}
+  s.summary     = %q{A Redis-backed messaging queue}
+  s.description = %q{Turnpike is a Redis-backed messaging queue.}
 
   s.rubyforge_project = "turnpike"
 
