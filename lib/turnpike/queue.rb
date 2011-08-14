@@ -62,6 +62,8 @@ module Turnpike
       redis.llen(name)
     end
 
+    alias size length
+
     # Notifies observers that the state of specified items has changed.
     def notify(*items)
       redis.publish(name, items.join('|'))
@@ -75,8 +77,6 @@ module Turnpike
     def observe(*items)
       Observer.new(name, *items).observe
     end
-
-    alias size length
 
     # Returns an array of items currently queued.
     #
