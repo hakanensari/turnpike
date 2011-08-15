@@ -1,9 +1,4 @@
-require 'rubygems'
-require 'bundler/setup'
-
-require 'test/unit'
-
-require File.expand_path('../lib/turnpike', File.dirname(__FILE__))
+require File.expand_path('helper.rb', File.dirname(__FILE__))
 
 class TestTurnpike < Test::Unit::TestCase
   def setup
