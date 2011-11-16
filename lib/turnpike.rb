@@ -1,25 +1,26 @@
 require 'redis'
 require 'turnpike/queue'
-require 'turnpike/observer'
 
 # = Turnpike
 #
-# A Redis-backed messaging queue.
+# A Redis-backed queue implementation
 module Turnpike
   class << self
-    # Returns a cached or new queue.
+    # Returns a queue
+    # @param [#to_s] queue
     def [](queue)
-      @queues[queue] ||= Queue.new(queue)
+      Queue.new(queue)
     end
 
-    # Sets Redis connection options.
+    # Sets Redis connection options
+    # @param [Hash] options
     def connect(options)
       @options = options
     end
 
-    # Redis connection options.
-    attr :options
+    # @return [Hash] Redis connection options
+    def options
+      @options ||= {}
+    end
   end
-
-  @options, @queues = {}, {}
 end
