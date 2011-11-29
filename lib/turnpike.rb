@@ -6,8 +6,8 @@ require 'turnpike/queue'
 # A Redis-backed first-in-first-out queue
 module Turnpike
   class << self
-    # Returns a queue
     # @param [#to_s] queue
+    # @return [Turnpike::Queue] a queue
     def [](queue)
       Queue.new(queue)
     end
