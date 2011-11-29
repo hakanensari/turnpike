@@ -2,23 +2,23 @@
 
 [![travis](https://secure.travis-ci.org/hakanensari/turnpike.png)](http://travis-ci.org/hakanensari/turnpike)
 
-Turnpike is a Redis-backed queue.
+Turnpike is a Redis-backed FIFO queue.
 
 # Usage
 
 Set up a queue:
 
-    queue = Turnpike['foo']
+    queue = Turnpike["jobs"]
 
-Push some items to the queue:
+Push items to end of the queue:
 
-    queue << 1, 2
+    queue << "foo", "bar"
 
-Prioritise a third item:
+Prioritise by pushing an item to the front of the queue:
 
-    queue.unshift 3
+    queue.unshift "baz"
 
 Pop items from the queue:
 
-    queue.pop # "3"
-    queue.pop(2) # ["1", "2"]
+    queue.pop # "baz"
+    queue.pop(2) # ["foo", "bar"]
