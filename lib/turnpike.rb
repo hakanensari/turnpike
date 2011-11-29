@@ -3,7 +3,7 @@ require 'turnpike/queue'
 
 # = Turnpike
 #
-# A Redis-backed queue implementation
+# A Redis-backed first-in-first-out queue
 module Turnpike
   class << self
     # Returns a queue

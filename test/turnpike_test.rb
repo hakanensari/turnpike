@@ -32,7 +32,7 @@ class TestTurnpike < Test::Unit::TestCase
 
     queue.push 2, 3
     assert_equal 3, queue.size
-    assert_equal ['1', '2', '3'], queue.peek(0, -1)
+    assert_equal ['1', '2', '3'], queue.peek
   end
 
   def test_unshift
@@ -42,7 +42,7 @@ class TestTurnpike < Test::Unit::TestCase
 
     queue.unshift 2, 3
     assert_equal 3, queue.size
-    assert_equal ['3', '2', '1'], queue.peek(0, -1)
+    assert_equal ['3', '2', '1'], queue.peek
   end
 
   def test_pop
@@ -79,5 +79,12 @@ class TestTurnpike < Test::Unit::TestCase
 
     assert_equal 1, queue1.size
     assert_equal 2, queue2.size
+  end
+
+  def test_peek
+    queue = Turnpike::Queue.new
+    assert_equal [], queue.peek
+    queue << 1
+    assert_equal ['1'], queue.peek
   end
 end

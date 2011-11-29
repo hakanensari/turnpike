@@ -1,5 +1,5 @@
 module Turnpike
-  # A Redis-backed queue
+  # A queue
   class Queue
     # @return [String] queue name
     attr :name
@@ -20,14 +20,9 @@ module Turnpike
       size == 0
     end
 
-    # Returns some or all queued items
-    # @param [Integer] start the start offset
-    # @param [Integer] count number of items to return
-    # @note When specifying the offset, 0 is the first queued item. A
-    # negative integer indicates the offset from the end, -1 being the
-    # last queued item.
-    def peek(start, count)
-      redis.lrange(name, start, count)
+    # @return [Array] queued items
+    def peek
+      redis.lrange(name, 0, -1)
     end
 
     # Retrieves one or more items from the queue
@@ -46,12 +41,12 @@ module Turnpike
     # Pushes items to the end of the queue
     # @param [Array] items splat of items
     def push(*items)
-      items.each { |item| redis.rpush(name, item) }
       # if redis_version >= '2.4'
       #   redis.rpush(name, *items)
       # else
       #   items.each { |item| redis.rpush(name, item) }
       # end
+      items.each { |item| redis.rpush(name, item) }
     end
 
     # Alias of push
