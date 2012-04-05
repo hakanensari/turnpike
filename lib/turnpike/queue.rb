@@ -83,8 +83,8 @@ module Turnpike
       Redis.current ||= Redis.connect Turnpike.options
     end
 
-     def redis_version
-       @redis_version ||= redis.info['redis_version']
-     end
+    def redis_version
+      @redis_version ||= redis.info['redis_version']
+    end
   end
 end
