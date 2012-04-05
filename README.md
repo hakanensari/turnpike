@@ -24,7 +24,7 @@ queue = Turnpike['foo']
 queue << 1, 2, 3
 queue.pop # => 1
 
-queue.peek => [1, 2]
+queue.peek => [2, 3]
 ```
 
 [Read the API] [5].
