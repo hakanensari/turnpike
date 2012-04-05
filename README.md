@@ -1,24 +1,36 @@
 # Turnpike
 
-[![travis](https://secure.travis-ci.org/hakanensari/turnpike.png)](http://travis-ci.org/hakanensari/turnpike)
+[![travis] [1]] [2]
 
-Turnpike is a Redis-backed FIFO queue.
+Turnpike is a Redis-backed queue.
+
+Or, less fancily put, Turnike provides a thin wrapper around a Redis list and
+speaks Ruby-standard-library colloquial.
+
+![turnpike] [3]
+
+## Installation
+
+```sh
+gem install turnpike
+```
 
 # Usage
 
-Set up a queue:
+An introspective moment of FIFO.
 
-    queue = Turnpike["jobs"]
+```ruby
+queue = Turnpike['foo']
 
-Push items to end of the queue:
+queue << 1, 2, 3
+queue.pop # => 1
 
-    queue << "foo", "bar"
+queue.peek => [1, 2]
+```
 
-Prioritise by pushing an item to the front of the queue:
+[Read the API] [4]. It's really short.
 
-    queue.unshift "baz"
-
-Pop items from the queue:
-
-    queue.pop # "baz"
-    queue.pop(2) # ["foo", "bar"]
+[1]: https://secure.travis-ci.org/hakanensari/turnpike.png
+[2]: http://travis-ci.org/hakanensari/turnpike
+[3]: http://f.cl.ly/items/33242X323P3M1t1G400H/turnpike.jpg
+[4]: https://github.com/hakanensari/turnpike/blob/master/lib/turnpike/queue.rb

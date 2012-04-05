@@ -1,24 +1,29 @@
+# External dependency.
 require 'redis'
+
+# Internal dependency.
 require 'turnpike/queue'
 
-# = Turnpike
-#
-# A Redis-backed first-in-first-out queue
+# A Redis-backed queue.
 module Turnpike
   class << self
-    # @param [#to_s] queue
-    # @return [Turnpike::Queue] a queue
-    def [](queue)
-      Queue.new(queue)
+    # Returns a Queue.
+    #
+    # name - A queue name that responds to to_s.
+    def [](name)
+      Queue.new name
     end
 
-    # Sets Redis connection options
-    # @param [Hash] options
-    def connect(options)
-      @options = options
+    # Sets Redis connection options.
+    #
+    # hsh - A Hash of options.
+    #
+    # Returns nothing.
+    def connect(hsh)
+      @options = hsh
     end
 
-    # @return [Hash] Redis connection options
+    # Internal: Returns a Hash of Redis connection options.
     def options
       @options ||= {}
     end

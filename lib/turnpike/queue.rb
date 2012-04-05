@@ -1,81 +1,90 @@
 module Turnpike
-  # A queue
+  # A queue.
   class Queue
-    # @return [String] queue name
+    # Returns a String name.
     attr :name
 
-    # Creates a new queue
-    # @param [#to_s] name
+    # Creates a new queue.
+    #
+    # name - A queue name that responds to to_s.
     def initialize(name = 'queue')
       @name = "turnpike:#{name}"
     end
 
-    # Removes all items from the queue
+    # Removes all items from the queue.
+    #
+    # Returns Integer number of items that were removed.
     def clear
-      redis.del(name)
+      redis.del name
     end
 
-    # @return [Boolean] whether the queue is empty
+    # Returns whether the queue is empty.
     def empty?
       size == 0
     end
 
-    # @return [Array] queued items
+    # Return an Array of all queued items.
     def peek
-      redis.lrange(name, 0, -1)
+      redis.lrange(name, 0, -1).map { |i| Marshal.load i }
     end
 
-    # Retrieves one or more items from the queue
-    # @param [Integer] n number of items to retrieve
-    # @return [Array, String, nil] retrieved items
+    # Pops one or more items from the front of the queue.
+    #
+    # n - Integer number of items to pop.
+    #
+    # Return a String item, an Array of items, or nil if the queue is empty.
     def pop(n = 1)
       items = []
       n.times do
         break unless item = redis.lpop(name)
-        items << item
+        items << Marshal.load(item)
       end
 
       n == 1 ? items.first : items
     end
 
-    # Pushes items to the end of the queue
-    # @param [Array] items splat of items
+    # Pushes items to the end of the queue.
+    #
+    # items - A splat Array of items.
+    #
+    # Returns the Integer size of the queue after the operation.
     def push(*items)
-      # if redis_version >= '2.4'
-      #   redis.rpush(name, *items)
-      # else
-      #   items.each { |item| redis.rpush(name, item) }
-      # end
-      items.each { |item| redis.rpush(name, item) }
+      if redis_version >= '2.4'
+        redis.rpush name, items.map { |i| Marshal.dump i }
+      else
+        items.each { |i| redis.rpush name, Marhsal.dump(i) }
+      end
     end
 
-    # Alias of push
+    # Syntactic sugar.
     alias << push
 
-    # @return [Integer] the size of the queue
+    # Returns the Integer size of the queue.
     def size
-      redis.llen(name)
+      redis.llen name
     end
 
-    # Pushes items to the front of the queue
-    # @param [Array] items splat of items
+    # Pushes items to the front of the queue.
+    #
+    # items - A splat Array of items.
+    #
+    # Returns the Integer size of the queue after the operation.
     def unshift(*items)
-      # if redis_version >= '2.4'
-      #   redis.lpush(name, *items)
-      # else
-      #   items.each { |item| redis.lpush(name, item) }
-      # end
-      items.each { |item| redis.lpush(name, item) }
+      if redis_version >= '2.4'
+        redis.lpush name, items.map { |i| Marshal.dump i }
+      else
+        items.each { |i| redis.lpush name, Marhsal.dump(i) }
+      end
     end
 
     private
 
     def redis
-      Redis.current ||= Redis.connect(Turnpike.options)
+      Redis.current ||= Redis.connect Turnpike.options
     end
 
-    # def redis_version
-    #   @redis_version ||= redis.info['redis_version']
-    # end
+     def redis_version
+       @redis_version ||= redis.info['redis_version']
+     end
   end
 end

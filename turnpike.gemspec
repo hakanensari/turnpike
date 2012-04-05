@@ -11,13 +11,11 @@ Gem::Specification.new do |s|
   s.summary     = %q{A Redis-backed queue}
   s.description = %q{Turnpike is a Redis-backed queue.}
 
-  s.rubyforge_project = 'turnpike'
-
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ['lib']
 
-  s.add_runtime_dependency 'redis', '~> 2.2'
+  s.add_runtime_dependency 'redis', '~> 3.0.0.rc1'
   s.add_development_dependency 'rake', '~> 0.9'
 end
