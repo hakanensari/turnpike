@@ -4,10 +4,9 @@
 
 Turnpike is a Redis-backed queue.
 
-Or, less fancily put, Turnike provides a thin wrapper around a Redis list and
-speaks Ruby-standard-library colloquial.
-
 ![turnpike] [3]
+
+Less fancily put: Turnike wraps a [Redis List] [4] and speaks Ruby colloquial.
 
 ## Installation
 
@@ -28,9 +27,12 @@ queue.pop # => 1
 queue.peek => [1, 2]
 ```
 
-[Read the API] [4]. It's really short.
+[Read the API] [5].
+
+It's really short.
 
 [1]: https://secure.travis-ci.org/hakanensari/turnpike.png
 [2]: http://travis-ci.org/hakanensari/turnpike
 [3]: http://f.cl.ly/items/33242X323P3M1t1G400H/turnpike.jpg
-[4]: https://github.com/hakanensari/turnpike/blob/master/lib/turnpike/queue.rb
+[4]: http://redis.io/topics/data-types
+[5]: https://github.com/hakanensari/turnpike/blob/master/lib/turnpike/queue.rb
