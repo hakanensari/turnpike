@@ -2,6 +2,8 @@ require 'bundler/setup'
 require 'test/unit'
 require File.expand_path('../lib/turnpike', File.dirname(__FILE__))
 
+Turnpike.connect :url => ENV['REDISTOGO_URL'] || 'redis://localhost:6379'
+
 class TestTurnpike < Test::Unit::TestCase
   def setup
     Redis.current.flushall
