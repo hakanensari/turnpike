@@ -31,12 +31,28 @@ class TestTurnpike < Test::Unit::TestCase
     assert_equal [1, 2, 3], queue.peek
   end
 
+  def test_push_2_2
+    queue = Turnpike::Queue.new
+    queue.instance_variable_set :@redis_version, '2.2'
+    queue.push 1
+    queue.push 2, 3
+    assert_equal [1, 2, 3], queue.peek
+  end
+
   def test_unshift
     queue = Turnpike::Queue.new
     queue.unshift 1
     assert_equal 1, queue.size
     queue.unshift 2, 3
     assert_equal 3, queue.size
+    assert_equal [3, 2, 1], queue.peek
+  end
+
+  def test_unshift_2_2
+    queue = Turnpike::Queue.new
+    queue.instance_variable_set :@redis_version, '2.2'
+    queue.unshift 1
+    queue.unshift 2, 3
     assert_equal [3, 2, 1], queue.peek
   end
 

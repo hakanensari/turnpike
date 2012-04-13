@@ -52,7 +52,7 @@ module Turnpike
       if redis_version >= '2.4'
         redis.rpush name, items.map { |i| Marshal.dump i }
       else
-        items.each { |i| redis.rpush name, Marhsal.dump(i) }
+        items.each { |i| redis.rpush name, Marshal.dump(i) }
       end
     end
 
@@ -73,7 +73,7 @@ module Turnpike
       if redis_version >= '2.4'
         redis.lpush name, items.map { |i| Marshal.dump i }
       else
-        items.each { |i| redis.lpush name, Marhsal.dump(i) }
+        items.each { |i| redis.lpush name, Marshal.dump(i) }
       end
     end
 
