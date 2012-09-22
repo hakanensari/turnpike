@@ -23,7 +23,7 @@ queue.unshift 1
 queue.peek # => [1, 2, 3, 4]
 ```
 
-[Read the API] [5]. It's short.
+[Read the API] [5].
 
 [1]: https://secure.travis-ci.org/hakanensari/turnpike.png
 [2]: http://travis-ci.org/hakanensari/turnpike
