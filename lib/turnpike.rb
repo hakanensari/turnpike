@@ -1,7 +1,4 @@
-# External dependency.
 require 'redis'
-
-# Internal dependency.
 require 'turnpike/queue'
 
 # A Redis-backed queue.
