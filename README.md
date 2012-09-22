@@ -1,35 +1,29 @@
 # Turnpike
 
-[![travis] [1]] [2]
+[![travis][1]][2]
 
-Turnpike is a Redis-backed queue.
+Turnpike is a Redis-backed queue that wraps a [List][4] and speaks Ruby
+colloquial.
 
-![turnpike] [3]
-
-Less fancily put: Turnike wraps a [Redis List] [4] and speaks Ruby colloquial.
-
-## Installation
-
-```sh
-gem install turnpike
-```
+![turnpike][3]
 
 # Usage
-
-An introspective moment of FIFO.
 
 ```ruby
 queue = Turnpike['foo']
 
 queue << 1, 2, 3
 queue.pop # => 1
+queue.peek # => [2, 3]
 
-queue.peek => [2, 3]
+queue << 4
+queue.peek # => [2, 3, 4]
+
+queue.unshift 1
+queue.peek # => [1, 2, 3, 4]
 ```
 
-[Read the API] [5].
-
-It's really short.
+[Read the API] [5]. It's short.
 
 [1]: https://secure.travis-ci.org/hakanensari/turnpike.png
 [2]: http://travis-ci.org/hakanensari/turnpike
