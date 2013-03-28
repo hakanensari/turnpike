@@ -49,11 +49,7 @@ module Turnpike
     #
     # Returns the Integer size of the queue after the operation.
     def push(*items)
-      if redis_version >= '2.4'
-        redis.rpush name, items.map { |i| Marshal.dump i }
-      else
-        items.each { |i| redis.rpush name, Marshal.dump(i) }
-      end
+      redis.rpush(name, items).map { |i| Marshal.dump(i) }
     end
 
     # Syntactic sugar.
@@ -70,11 +66,7 @@ module Turnpike
     #
     # Returns the Integer size of the queue after the operation.
     def unshift(*items)
-      if redis_version >= '2.4'
-        redis.lpush name, items.map { |i| Marshal.dump i }
-      else
-        items.each { |i| redis.lpush name, Marshal.dump(i) }
-      end
+      redis.lpush(name, items).map { |i| Marshal.dump(i) }
     end
 
     private
@@ -82,9 +74,7 @@ module Turnpike
     def redis
       Redis.current ||= Redis.connect Turnpike.options
     end
-
-    def redis_version
-      @redis_version ||= redis.info['redis_version']
+      Redis.current ||= Redis.connect(Turnpike.options)
     end
   end
 end
