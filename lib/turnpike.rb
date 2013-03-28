@@ -11,7 +11,7 @@ module Turnpike
       Queue.new name
     end
 
-    # Sets Redis connection options.
+    # Set Redis connection options.
     #
     # hsh - A Hash of options.
     #
