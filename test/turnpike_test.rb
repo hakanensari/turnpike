@@ -94,11 +94,4 @@ class TestTurnpike < MiniTest::Unit::TestCase
     assert_equal 1, queue1.size
     assert_equal 2, queue2.size
   end
-
-  def test_peek
-    queue = Turnpike::Queue.new
-    assert_equal [], peek(queue)
-    queue << 1
-    assert_equal [1], peek(queue)
-  end
 end
