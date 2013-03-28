@@ -44,7 +44,7 @@ module Turnpike
     #
     # Returns the Integer size of the queue after the operation.
     def push(*items)
-      redis.rpush(name, items).map { |i| Marshal.dump(i) }
+      redis.rpush(name, items.map { |i| Marshal.dump(i) })
     end
 
     # Syntactic sugar.
@@ -61,7 +61,7 @@ module Turnpike
     #
     # Returns the Integer size of the queue after the operation.
     def unshift(*items)
-      redis.lpush(name, items).map { |i| Marshal.dump(i) }
+      redis.lpush(name, items.map { |i| Marshal.dump(i) })
     end
 
     private
