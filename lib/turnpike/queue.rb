@@ -23,11 +23,11 @@ module Turnpike
       size == 0
     end
 
-    # Pops one or more items from the front of the queue.
+    # Pop one or more items from the front of the queue.
     #
     # n - Integer number of items to pop.
     #
-    # Return a String item, an Array of items, or nil if the queue is empty.
+    # Returns a String item, an Array of items, or nil if the queue is empty.
     def pop(n = 1)
       items = []
       n.times do
