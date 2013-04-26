@@ -67,7 +67,7 @@ module Turnpike
     private
 
     def redis
-      Redis.current ||= Redis.connect(Turnpike.options)
+      Redis.current
     end
   end
 end
