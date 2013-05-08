@@ -1,3 +1,6 @@
+require 'msgpack'
+require 'redis'
+
 module Turnpike
   # A queue.
   class Queue
@@ -32,7 +35,7 @@ module Turnpike
       items = []
       n.times do
         break unless item = redis.lpop(name)
-        items << Marshal.load(item)
+        items << MessagePack.unpack(item)
       end
 
       n == 1 ? items.first : items
@@ -44,7 +47,7 @@ module Turnpike
     #
     # Returns the Integer size of the queue after the operation.
     def push(*items)
-      redis.rpush(name, items.map { |i| Marshal.dump(i) })
+      redis.rpush(name, items.map { |i| MessagePack.pack(i) })
     end
 
     # Syntactic sugar.
@@ -61,7 +64,7 @@ module Turnpike
     #
     # Returns the Integer size of the queue after the operation.
     def unshift(*items)
-      redis.lpush(name, items.map { |i| Marshal.dump(i) })
+      redis.lpush(name, items.map { |i| MessagePack.pack(i) })
     end
 
     private

@@ -9,7 +9,7 @@ class TestTurnpike < MiniTest::Unit::TestCase
 
   def peek(queue)
     redis = queue.send(:redis)
-    redis.lrange(queue.name, 0, -1).map { |i| Marshal.load(i) }
+    redis.lrange(queue.name, 0, -1).map { |i| MessagePack.unpack(i) }
   end
 
   def test_bracket
