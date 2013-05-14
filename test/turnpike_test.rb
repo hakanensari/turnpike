@@ -1,25 +1,43 @@
-require 'bundler/setup'
+$: << File.expand_path('../lib', File.dirname(__FILE__))
 require 'minitest/autorun'
-require File.expand_path('../lib/turnpike', File.dirname(__FILE__))
+require 'turnpike'
 
 class TestTurnpike < MiniTest::Unit::TestCase
+  def test_call
+    assert_kind_of Turnpike::Queue, Turnpike.call
+    assert_kind_of Turnpike::UniqueQueue, Turnpike.call(unique: true)
+  end
+
+  def test_queue_name
+    queue = Turnpike::Base.new('foo')
+    assert_includes queue.name, 'foo'
+  end
+
+  def test_abstract_class
+    queue = Turnpike::Base.new('foo')
+    %w(push pop unshift size).each do |mth|
+      assert_raises(NotImplementedError) { queue.send(mth) }
+    end
+  end
+end
+
+module QueueTests
+  def queue
+    @queue ||= klass.new('foo')
+  end
+
   def setup
     Redis.current.flushall
   end
 
-  def peek(queue)
-    redis = queue.send(:redis)
-    redis.lrange(queue.name, 0, -1).map { |i| MessagePack.unpack(i) }
-  end
-
-  def test_bracket
-    queue = Turnpike['foo']
-    assert_kind_of Turnpike::Queue, queue
-    assert_equal 'turnpike:foo', queue.name
+  def test_push
+    queue.push(1)
+    assert_equal 1, queue.size
+    queue.push(2, 3)
+    assert_equal [1, 2, 3], peek(queue)
   end
 
   def test_emptiness
-    queue = Turnpike::Queue.new
     assert queue.empty?
     queue << 1
     assert !queue.empty?
@@ -27,26 +45,14 @@ class TestTurnpike < MiniTest::Unit::TestCase
     assert queue.empty?
   end
 
-  def test_push
-    queue = Turnpike::Queue.new
-    queue.push(1)
-    assert_equal 1, queue.size
-    queue.push(2, 3)
-    assert_equal 3, queue.size
-    assert_equal [1, 2, 3], peek(queue)
-  end
-
   def test_unshift
-    queue = Turnpike::Queue.new
-    queue.unshift(1)
-    assert_equal 1, queue.size
+    queue.push(1)
     queue.unshift(2, 3)
     assert_equal 3, queue.size
-    assert_equal [3, 2, 1], peek(queue)
+    assert_equal 1, peek(queue).last
   end
 
   def test_pop
-    queue = Turnpike::Queue.new
     queue.push(1, 2)
     assert_equal 1, queue.pop
     assert_equal 2, queue.pop
@@ -54,7 +60,6 @@ class TestTurnpike < MiniTest::Unit::TestCase
   end
 
   def test_pop_many
-    queue = Turnpike::Queue.new
     queue.push(1, 2, 3)
     assert_equal [1, 2], queue.pop(2)
     assert_equal [3], queue.pop(2)
@@ -62,7 +67,6 @@ class TestTurnpike < MiniTest::Unit::TestCase
   end
 
   def test_order
-    queue = Turnpike::Queue.new
     queue.push(1, 2)
     queue.unshift(3)
     assert_equal 3, queue.pop
@@ -70,12 +74,33 @@ class TestTurnpike < MiniTest::Unit::TestCase
     assert_equal 2, queue.pop
   end
 
-  def test_multiple_queues
-    queue1 = Turnpike::Queue.new 'foo'
-    queue2 = Turnpike::Queue.new 'bar'
-    queue1.push(1)
-    queue2.push(2, 3)
-    assert_equal 1, queue1.size
-    assert_equal 2, queue2.size
+  def test_multiplicity
+    q1 = klass.new('foo')
+    q2 = klass.new('bar')
+    q1.push(1)
+    q2.push(2, 3)
+    assert_equal 1, q1.size
+    assert_equal 2, q2.size
+  end
+end
+
+class TestQueue < MiniTest::Unit::TestCase
+  include QueueTests
+
+  def klass; Turnpike::Queue; end
+
+  def peek(queue)
+    queue.redis.lrange(queue.name, 0, -1).map { |i| queue.unpack(i) }
+  end
+end
+
+
+class TestUniqueQueue < MiniTest::Unit::TestCase
+  include QueueTests
+
+  def klass; Turnpike::UniqueQueue; end
+
+  def peek(queue)
+    queue.redis.zrange(queue.name, 0, -1).map { |i| queue.unpack(i) }
   end
 end
