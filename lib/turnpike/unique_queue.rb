@@ -31,12 +31,9 @@ module Turnpike
     #
     # items - A splat Array of items.
     #
-    # Returns the Integer size of the queue after the operation.
+    # Returns nothing.
     def push(*items, score: Time.now.to_f)
-      redis.multi do
-        redis.zadd(name, items.reduce([]) { |ary, i| ary.push(score, pack(i)) })
-        size
-      end
+      redis.zadd(name, items.reduce([]) { |ary, i| ary.push(score, pack(i)) })
     end
 
     alias << push
@@ -50,7 +47,7 @@ module Turnpike
     #
     # items - A splat Array of items.
     #
-    # Returns the Integer size of the queue after the operation.
+    # Returns nothing.
     def unshift(*items)
       _, score = redis.zrange(name, 0, 0, with_scores: true).pop
       score ? push(*items, score: score - 1) : push(*items)

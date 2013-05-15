@@ -21,7 +21,7 @@ module Turnpike
     #
     # items - A splat Array of items.
     #
-    # Returns the Integer size of the queue after the operation.
+    # Returns nothing.
     def push(*items)
       redis.rpush(name, items.map { |i| pack(i) })
     end
@@ -37,7 +37,7 @@ module Turnpike
     #
     # items - A splat Array of items.
     #
-    # Returns the Integer size of the queue after the operation.
+    # Returns nothing.
     def unshift(*items)
       redis.lpush(name, items.map { |i| pack(i) })
     end
