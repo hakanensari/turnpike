@@ -1,5 +1,6 @@
 $: << File.expand_path('../lib', File.dirname(__FILE__))
 require 'minitest/autorun'
+require 'minitest/benchmark' if ENV['BENCH']
 require 'turnpike'
 
 class TestTurnpike < MiniTest::Unit::TestCase
@@ -17,6 +18,22 @@ class TestTurnpike < MiniTest::Unit::TestCase
     queue = Turnpike::Base.new('foo')
     %w(push pop unshift size).each do |mth|
       assert_raises(NotImplementedError) { queue.send(mth) }
+    end
+  end
+
+  def bench_queue
+    queue = Turnpike.call
+    assert_performance_linear do |n|
+      queue.push(*(1..n).to_a)
+      1.upto(n) { queue.pop }
+    end
+  end
+
+  def bench_unique
+    queue = Turnpike.call(unique: true)
+    assert_performance_linear do |n|
+      queue.push(*(1..n).to_a)
+      1.upto(n) { queue.pop }
     end
   end
 end
