@@ -17,13 +17,7 @@ module Turnpike
     #
     # Returns an item, an Array of items, or nil if the queue is empty.
     def pop(n = 1)
-      items = begin
-        redis.evalsha(ZPOP_SHA, [name, n])
-      rescue Redis::CommandError
-        redis.eval(ZPOP, [name, n])
-      end
-      items.map! { |i| unpack(i) }
-
+      items = zpop(n).map { |i| unpack(i) }
       n == 1 ? items.first : items
     end
 
@@ -51,6 +45,14 @@ module Turnpike
     def unshift(*items)
       _, score = redis.zrange(name, 0, 0, with_scores: true).pop
       score ? push(*items, score: score - 1) : push(*items)
+    end
+
+    private
+
+    def zpop(n)
+      redis.evalsha(ZPOP_SHA, [name, n])
+    rescue Redis::CommandError
+      redis.eval(ZPOP, [name, n])
     end
   end
 end
