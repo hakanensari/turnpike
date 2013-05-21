@@ -4,8 +4,13 @@ require 'minitest/benchmark' if ENV['BENCH']
 require 'turnpike'
 
 class TestTurnpike < MiniTest::Unit::TestCase
-  def test_call
+  def test_lambdalike
     assert_kind_of Turnpike::Queue, Turnpike.call
+    assert_kind_of Turnpike::Queue, Turnpike.()
+    assert_kind_of Turnpike::Queue, Turnpike[]
+  end
+
+  def test_unique_call
     assert_kind_of Turnpike::UniqueQueue, Turnpike.call(unique: true)
   end
 
