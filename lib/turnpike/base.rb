@@ -8,7 +8,6 @@ module Turnpike
 
     def_delegators :MessagePack, :pack, :unpack
 
-    attr :name
     attr :name, :redis
 
       @name = "turnpike:#{name}"
