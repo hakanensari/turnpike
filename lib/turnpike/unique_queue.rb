@@ -15,7 +15,7 @@ module Turnpike
     #
     # n - Integer number of items to pop.
     #
-    # Returns a String item, an Array of items, or nil if the queue is empty.
+    # Returns an item, an Array of items, or nil if the queue is empty.
     def pop(n = 1)
       items = begin
         redis.evalsha(ZPOP_SHA, [name, n])
