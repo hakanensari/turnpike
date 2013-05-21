@@ -6,13 +6,13 @@ module Turnpike
   class Base
     extend Forwardable
 
-    def_delegator :Redis, :current, :redis
     def_delegators :MessagePack, :pack, :unpack
 
-    attr :name
+    attr :name, :redis
 
-    def initialize(name)
       @name = "turnpike:#{name}"
+    def initialize(name, redis: Redis.current)
+      @redis = redis
     end
 
     def clear
