@@ -24,6 +24,7 @@ module Turnpike
     end
 
     def pop(*); raise NotImplementedError; end
+    def bpop(*); raise NotImplementedError; end
     def push(*); raise NotImplementedError; end
     def size; raise NotImplementedError; end
     def unshift(*); raise NotImplementedError; end

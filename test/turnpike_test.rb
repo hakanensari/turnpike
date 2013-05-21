@@ -29,7 +29,7 @@ class TestTurnpike < MiniTest::Unit::TestCase
 
   def test_abstract_class
     queue = Turnpike::Base.new('foo')
-    %w(push pop unshift size).each do |mth|
+    %w(push pop bpop unshift size).each do |mth|
       assert_raises(NotImplementedError) { queue.send(mth) }
     end
   end
@@ -122,8 +122,31 @@ class TestQueue < MiniTest::Unit::TestCase
   def peek(queue)
     queue.redis.lrange(queue.name, 0, -1).map { |i| queue.unpack(i) }
   end
-end
 
+  def test_blocking_pop
+    Thread.new {
+      sleep 0.1
+      klass.new('foo', redis: Redis.new).push(3)
+      queue.push(3)
+    }
+    queue.push(1, 2)
+    assert_equal [1, 2], queue.bpop(2)
+    assert_equal 3, queue.bpop
+  end
+
+  def test_non_blocking_enumeration
+    klass.class_eval do
+      include Enumerable
+      def each(&blk)
+        while x = pop
+          blk.call(x)
+        end
+      end
+    end
+    queue.push(1, 2)
+    assert_equal [1, 2], queue.to_a
+  end
+end
 
 class TestUniqueQueue < MiniTest::Unit::TestCase
   include QueueTests
@@ -132,5 +155,9 @@ class TestUniqueQueue < MiniTest::Unit::TestCase
 
   def peek(queue)
     queue.redis.zrange(queue.name, 0, -1).map { |i| queue.unpack(i) }
+  end
+
+  def test_blocking_pop
+    assert_raises(NotImplementedError) { queue.bpop }
   end
 end
