@@ -8,11 +8,10 @@ module Turnpike
     #
     # Returns an item, an Array of items, or nil if the queue is empty.
     def pop(n = 1)
-      items = []
-      n.times do
-        break unless item = redis.lpop(name)
-        items << unpack(item)
-      end
+      items = n.times.reduce([]) { |ary, _|
+        break ary unless item = redis.lpop(name)
+        ary << unpack(item)
+      }
 
       n == 1 ? items.first : items
     end
