@@ -24,7 +24,7 @@ Push payload to the front of the queue:
 
 ```ruby
 q.unshift('foo') # => 2
-q.pop # => 'foo"'
+q.pop # => 'foo'
 ```
 
 Use a queue with set-like properties to ensure uniqueness of queued items:
