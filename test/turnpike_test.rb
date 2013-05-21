@@ -19,6 +19,14 @@ class TestTurnpike < MiniTest::Unit::TestCase
     assert_includes queue.name, 'foo'
   end
 
+  def test_namespace
+    orig = Turnpike.namespace
+    Turnpike.namespace = 'foo'
+    queue = Turnpike::Base.new('bar')
+    assert_equal queue.name, 'foo:bar'
+    Turnpike.namespace = orig
+  end
+
   def test_abstract_class
     queue = Turnpike::Base.new('foo')
     %w(push pop unshift size).each do |mth|

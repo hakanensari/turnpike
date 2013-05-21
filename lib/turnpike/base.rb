@@ -10,8 +10,8 @@ module Turnpike
 
     attr :name, :redis
 
-      @name = "turnpike:#{name}"
     def initialize(name, redis: Redis.current)
+      @name = "#{Turnpike.namespace}:#{name}"
       @redis = redis
     end
 
