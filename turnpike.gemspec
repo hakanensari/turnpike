@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'redis', '~> 3.0'
   s.add_runtime_dependency 'msgpack', '~> 1.0'
   s.add_development_dependency 'rake'
+  s.add_development_dependency 'minitest', '~> 5.0'
 
   s.required_ruby_version = '>= 2.0'
 end
