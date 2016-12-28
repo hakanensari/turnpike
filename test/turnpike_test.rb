@@ -3,7 +3,7 @@ require 'minitest/autorun'
 require 'minitest/benchmark' if ENV['BENCH']
 require 'turnpike'
 
-class TestTurnpike < MiniTest::Unit::TestCase
+class TestTurnpike < MiniTest::Test
   def test_lambdalike
     assert_kind_of Turnpike::Queue, Turnpike.call
     assert_kind_of Turnpike::Queue, Turnpike.()
@@ -86,7 +86,7 @@ module QueueTests
     queue.push(1, 2)
     assert_equal 1, queue.pop
     assert_equal 2, queue.pop
-    assert_equal nil, queue.pop
+    assert_nil queue.pop
   end
 
   def test_pop_many
@@ -114,7 +114,7 @@ module QueueTests
   end
 end
 
-class TestQueue < MiniTest::Unit::TestCase
+class TestQueue < MiniTest::Test
   include QueueTests
 
   def klass; Turnpike::Queue; end
@@ -148,7 +148,7 @@ class TestQueue < MiniTest::Unit::TestCase
   end
 end
 
-class TestUniqueQueue < MiniTest::Unit::TestCase
+class TestUniqueQueue < MiniTest::Test
   include QueueTests
 
   def klass; Turnpike::UniqueQueue; end
